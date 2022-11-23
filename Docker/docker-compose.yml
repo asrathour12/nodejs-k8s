@@ -1,0 +1,35 @@
+version: "2"
+services:
+  postgres-service:
+    image: postgres
+    networks:
+      - node-express-sequelize-postgresql
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: 123
+      POSTGRES_USER: postgres
+      POSTGRES_DB: testdb
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+  app:
+    networks:
+      - node-express-sequelize-postgresql
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres-service:
+        condition: service_healthy
+    links:
+      - postgres-service
+networks:
+  default:
+    external:
+      name: node-express-sequelize-postgresql
+  node-express-sequelize-postgresql:
+    driver: bridge
+

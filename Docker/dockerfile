@@ -1,0 +1,14 @@
+FROM node:16
+
+LABEL MAINTAINER='Ankit'
+
+# Create app directory
+WORKDIR /usr/src/app
+
+RUN git clone https://github.com/bezkoder/node-express-sequelize-postgresql.git .
+ADD ./db.config.js /usr/src/app/app/config/
+
+RUN npm install
+
+EXPOSE 8080
+CMD ["node", "server.js"]
